@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zpring-service
+  labels:
+    app: zpring-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zpring-service
+  template:
+    metadata:
+      labels:
+        app: zpring-service
+    spec:
+      containers:
+        - name: zpring-service
+          image: zpring-service:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NACOS_SERVICE
+              value: "nacos-service:8848"
