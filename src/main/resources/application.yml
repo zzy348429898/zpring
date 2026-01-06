@@ -4,7 +4,27 @@ server:
 spring:
   application:
     name: zpring-service
+  # 数据库连接配置
+  datasource:
+    # 如果 MySQL 在 K8s 内部，地址填 nacos-mysql:3306
+    # 如果在本地，通过 port-forward 映射，则填 127.0.0.1:3306
+    url: jdbc:mysql://${MYSQL_SERVICE_HOST:127.0.0.1:3306}/zpring?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
+  # JPA / Hibernate 配置
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      # update: 自动根据实体类更新表结构（适合开发阶段）
+      # none: 不进行任何操作
+      ddl-auto: validate
+    show-sql: true # 打印 SQL 语句，方便调试
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
   # 从 Nacos 拉取应用配置（Spring Boot 3 推荐写法）
   config:
     import:
@@ -19,6 +39,9 @@ spring:
         file-extension: yaml
       discovery:
         server-addr: ${NACOS_SERVICE:127.0.0.1:8848}
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
 management:
   endpoints:
     web:

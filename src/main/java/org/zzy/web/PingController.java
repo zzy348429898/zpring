@@ -13,6 +13,6 @@ public class PingController {
 
     @GetMapping("/ping")
     public String ping() {
-        return "pong" + token;
+        return "pong";
     }
 }
