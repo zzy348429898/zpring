@@ -3,11 +3,13 @@ package org.zzy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class ZpringApplication {
+@EnableFeignClients
+public class TestFeignApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ZpringApplication.class, args);
+        SpringApplication.run(TestFeignApplication.class, args);
     }
 }

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-feign-service
+  labels:
+    app: test-feign-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-feign-service
+  template:
+    metadata:
+      labels:
+        app: test-feign-service
+    spec:
+      containers:
+        - name: test-feign-service
+          image: test-feign-service:v1
+          ports:
+            - containerPort: 8081
+          env:
+            - name: NACOS_SERVICE
+              value: "nacos-service:8848"

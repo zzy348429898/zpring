@@ -26,19 +26,24 @@ spring:
         format_sql: true
         use_sql_comments: true
   # 从 Nacos 拉取应用配置（Spring Boot 3 推荐写法）
-  config:
-    import:
-      - optional:nacos:${spring.application.name}
-      - nacos:zpring-service.yaml
+#  config:
+#    import:
+#      - optional:nacos:${spring.application.name}
+#      - nacos:zpring-service.yaml
+#  cloud:
+#    nacos:
+#      config:
+#        server-addr: ${NACOS_SERVICE:127.0.0.1:8848}
+#        namespace: public
+#        group: DEFAULT_GROUP
+#        file-extension: yaml
+#      discovery:
+#        server-addr: ${NACOS_SERVICE:127.0.0.1:8848}
   cloud:
-    nacos:
-      config:
-        server-addr: ${NACOS_SERVICE:127.0.0.1:8848}
-        namespace: public
-        group: DEFAULT_GROUP
-        file-extension: yaml
+    kubernetes:
       discovery:
-        server-addr: ${NACOS_SERVICE:127.0.0.1:8848}
+        all-namespaces: false
+        namespace: default
   flyway:
     enabled: true
     baseline-on-migrate: true

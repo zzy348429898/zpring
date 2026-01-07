@@ -1,0 +1,14 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: test-feign-service
+  cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: false
+        namespace: default
+logging:
+  level:
+    org.zzy.client.UserClient: DEBUG # 改成你 Feign 接口的全类名
