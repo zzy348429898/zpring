@@ -1,0 +1,81 @@
+---
+# 1. 持久化存储声明
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nacos-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi  # 建议至少 5GB 用于存储配置和日志
+
+---
+# 2. 服务暴露
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-service
+spec:
+  selector:
+    app: nacos
+  ports:
+    - name: http
+      port: 8848
+      targetPort: 8848
+    - name: grpc
+      port: 9848    # Nacos 2.x 客户端连接必需
+      targetPort: 9848
+
+---
+# 3. Nacos 部署详情
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      labels:
+        app: nacos
+    spec:
+      containers:
+        - name: nacos
+          image: nacos/nacos-server:v2.1.1 # 建议使用最新的稳定版
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          env:
+            - name: MODE
+              value: "standalone" # 单机模式
+            - name: SPRING_DATASOURCE_PLATFORM
+              value: "derby"     # 默认使用内嵌数据库，如需外接 MySQL 请修改此项
+            - name: JVM_XMS
+              value: "512m"
+            - name: JVM_XMX
+              value: "1024m"
+          ports:
+            - containerPort: 8848
+            - containerPort: 9848
+          volumeMounts:
+            - name: nacos-data
+              mountPath: /home/nacos/data  # 核心数据存储目录
+            - name: nacos-logs
+              mountPath: /home/nacos/logs
+      volumes:
+        - name: nacos-data
+          persistentVolumeClaim:
+            claimName: nacos-pvc
+        - name: nacos-logs
+          hostPath:                        # 日志建议挂载到宿主机或使用临时的 emptyDir
+            path: /tmp/nacos/logs
+            type: DirectoryOrCreate
