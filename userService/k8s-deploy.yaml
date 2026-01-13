@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: zpring-service
+  name: user-service
   labels:
-    app: zpring-service
+    app: user-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: zpring-service
+      app: user-service
   template:
     metadata:
       labels:
-        app: zpring-service
+        app: user-service
     spec:
       containers:
-        - name: zpring-service
-          image: zpring-service:v1
+        - name: user-service
+          image: user-service:v1
           ports:
             - containerPort: 8080
           env:

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: zpring-service
+    name: user-service
   # 数据库连接配置
   datasource:
     # 如果 MySQL 在 K8s 内部，地址填 nacos-mysql:3306
@@ -26,24 +26,21 @@ spring:
         format_sql: true
         use_sql_comments: true
   # 从 Nacos 拉取应用配置（Spring Boot 3 推荐写法）
-#  config:
-#    import:
-#      - optional:nacos:${spring.application.name}
-#      - nacos:zpring-service.yaml
-#  cloud:
-#    nacos:
-#      config:
-#        server-addr: ${NACOS_SERVICE:127.0.0.1:8848}
-#        namespace: public
-#        group: DEFAULT_GROUP
-#        file-extension: yaml
-#      discovery:
-#        server-addr: ${NACOS_SERVICE:127.0.0.1:8848}
+  config:
+    import:
+#      - nacos:${spring.application.name}
+      - nacos:user-service?server-addr=nacos-service:8848
   cloud:
-    kubernetes:
+    nacos:
+      config:
+#        server-addr: ${NACOS_SERVICE:127.0.0.1:8848}
+        server-addr: nacos-service:8848
+        namespace: public
+        group: DEFAULT_GROUP
+        file-extension: yaml
       discovery:
-        all-namespaces: false
-        namespace: default
+        server-addr: nacos-service:8848
+#        server-addr: ${NACOS_SERVICE:127.0.0.1:8848}
   flyway:
     enabled: true
     baseline-on-migrate: true
